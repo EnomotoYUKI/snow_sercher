@@ -24,12 +24,8 @@
 
 import time
 import VL53L0X
-import cv2
 import numpy as np
 
-#黒画像800x600を作成
-img = np.zeros((600, 800, 3), np.uint8)
-img_disp = img.copy() #img_dispにimgをコピー
 
 # Create a VL53L0X object
 tof = VL53L0X.VL53L0X()
@@ -37,28 +33,36 @@ tof = VL53L0X.VL53L0X()
 # Start ranging
 tof.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
 
+threshold=10 #閾値
 # 連続測定するときに必要な時間間隔を得る
 timing = tof.get_timing()
 if (timing < 20000):
     timing = 20000
 print ("Timing %d ms" % (timing/1000))
 
-while True:
-    #黒画でキーが押されたら終了
-    key = cv2.waitKey(1)
-    if key != -1:
-        break
-
+def check_threshold(threshold):
+    count =0
+    while True:
     #必要な時間間隔を空けてから距離をcm単位にして取得
-    time.sleep(timing/1000000.00)
-    distance = tof.get_distance()/10
-    text = str(distance) + 'cm'
+        distance = tof.get_distance()/10
+        text = str(distance) + 'cm'
+        print(text)
+        if distance < threshold:
+            count +=1
+            if count ==3:
+                return "おい、落雪するぞ"
+        else:
+            print(text)
+            count =0
+        time.sleep(1)
 
     #黒画に距離の文字列を描画
-    img_disp = img.copy() #img_dispにimgをコピー
-    cv2.putText(img_disp, text, (50, 150), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 16)
-    cv2.imshow('black', img_disp)
+    # img_disp = img.copy() #img_dispにimgをコピー
+    # cv2.putText(img_disp, text, (50, 150), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 16)
+    # cv2.imshow('black', img_disp)
+while True:
+    print(check_threshold(threshold))  # 閾値より低い距離が3回連続で測定されたらTrueを出力
 
-#終了処理
-tof.stop_ranging()
-cv2.destroyAllWindows()
+# #終了処理
+# tof.stop_ranging()
+# cv2.destroyAllWindows()
