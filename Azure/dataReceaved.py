@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify
-import insertMysql
-import sendEmail
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -10,11 +9,18 @@ def receive_data():
     temperature = data.get('temperature')
     humidity = data.get('humidity')
     snow_depth = data.get('snow_depth')  # True または False
+    timestamp = data.get('timestamp')  # 時間データ
+
+    # 時間データがUnixタイムスタンプ形式の場合、それを読みやすい形式に変換する
+    if timestamp:
+        time_received = datetime.fromtimestamp(timestamp)
+    else:
+        time_received = "タイムスタンプなし"
 
     # ここでデータを処理（例：データベースへの保存、アラートのチェックなど）
-    print(f"受け取ったデータ: 温度={temperature}, 湿度={humidity}, 積雪量={snow_depth}")
+    print(f"受け取ったデータ: 時間={time_received}, 温度={temperature}, 湿度={humidity}, 積雪量={snow_depth}")
 
     return jsonify({"status": "success"})
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=5000)
+    app.run(host='0.0.0.0', port=5000)
