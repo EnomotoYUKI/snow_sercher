@@ -1,5 +1,5 @@
 import time
-import VL53L0X
+import Iot_service.VL53L0X as VL53L0X
 import csv
 import datetime
 import os
