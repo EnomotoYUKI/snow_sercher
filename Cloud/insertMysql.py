@@ -32,12 +32,15 @@ class insertMysql:
         # 切断
         cur.close()
         conn.close()
+        
     def optimizationData(self,path):
         self.insertData = []
         with open(path) as f:
             for line in f:
                 self.insertData.append(line.rstrip().split(","))
-        print(self.insertData)
+        
+        flag = any(sublist[0].lower() == 'true' for sublist in self.insertData)
+        return flag
         
         
 if __name__ == '__main__':
