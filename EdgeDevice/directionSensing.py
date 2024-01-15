@@ -1,11 +1,25 @@
 import time
-import Iot_service.VL53L0X as VL53L0X
+import VL53L0X
 import csv
 import datetime
 import os
+from bme280 import bme280
+from bme280 import bme280_i2c
 
-# CSVファイル名
-filename = 'data.csv'
+
+# ディレクトリのパス
+directory = '/home/pi/snow_sercher/Iot_service/data'
+
+# ファイル名
+file_name = 'data.csv'
+
+# 完全なファイルパス
+filename = os.path.join(directory, file_name)
+
+# ディレクトリが存在しない場合は作成
+if not os.path.exists(directory):
+    os.makedirs(directory)
+
 # ファイルが存在するかどうかを確認し、存在しなければヘッダーを書き込む
 file_exists = os.path.exists(filename)
 if not file_exists:
@@ -18,6 +32,11 @@ tof = VL53L0X.VL53L0X()
 # 測定を開始
 tof.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
 
+# BME280の初期化
+bme280_i2c.set_default_i2c_address(0x76)
+bme280_i2c.set_default_bus(1)
+bme280.setup()
+
 # 閾値
 threshold = 10
 
@@ -25,21 +44,30 @@ def measure_distance():
     distance = tof.get_distance() / 10
     return distance
 
+def read_bme280():
+    data = bme280.read_all()
+    temperature = round(data.temperature,2)
+    humidity = round(data.humidity,2)
+    return temperature, humidity
+
 def rapid_measurement(threshold):
     count = 0
     for _ in range(5):
         distance = measure_distance()
+        print(distance)
         if distance < threshold:
             count += 1
-        time.sleep(3)
+        time.sleep(1)
     return count
 
 # 主ループ
 while True:
-    # 定期的な測定
+     # 温度と湿度を取得
+    tem, hum= read_bme280()
+    time.sleep(3)
+    # 定期的な距離測定
     distance = measure_distance()
-    tem = 0  # 温度センサからの読み取りを実装する
-    hum = 0  # 湿度センサからの読み取りを実装する
+    print(distance)
     dt_now = datetime.datetime.now()
 
     # 距離が閾値以下の場合、短い間隔での追加測定を行う
@@ -53,7 +81,4 @@ while True:
         writer = csv.writer(file)
         writer.writerow([judge, tem, hum, dt_now])
 
-    time.sleep(10)  # 300秒（5分）待機
-
-# 終了処理
-tof.stop_ranging()
+    time.sleep(1)  # 300秒（5分）待機 test 10s
