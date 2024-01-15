@@ -27,6 +27,7 @@ class sendEmail:
         message.attach(MIMEText(text, "plain"))
         server.send_message(message)
         server.quit()
+    
         
 if __name__ == '__main__':
     sendEmail().sendEmail()
