@@ -10,7 +10,7 @@ class dataReceive:
         
         
     def receiveData(self):
-        ip = "localhost"
+        ip = "0.0.0.0"
         port = 12345
         output_list = []
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -20,7 +20,7 @@ class dataReceive:
                 conn, addr = s.accept()
                 with conn:
                     dt_now = datetime.datetime.now()
-                    fname = "./strage/" + dt_now.strftime('%Y%m%d%H%M%S') + "_received.scv"
+                    fname = "./Cloud/strage/" + dt_now.strftime('%Y%m%d%H%M%S') + "_received.csv"
                     with open(fname, mode="ab") as f:
                         while True:
                             data = conn.recv(1024)
@@ -28,7 +28,7 @@ class dataReceive:
                                 break
                             f.write(data)
                             conn.sendall(b'Received done')
-                            return fname
+                return fname
 if __name__ == '__main__':
 	sd = dataReceive()
 	sd.receiveData()
