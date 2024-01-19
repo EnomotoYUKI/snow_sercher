@@ -17,8 +17,8 @@ class main:
             snow_flag = self.im.optimizationData(fname)
             self.im.insertMysql()
             os.remove(fname)
-            print("sending email...")
             if snow_flag:
+                print("sending email...")
                 self.se.sendEmail()
 
 
