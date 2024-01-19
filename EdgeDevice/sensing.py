@@ -58,25 +58,23 @@ class directionSensing:
         return count
 
     def mainSense(self):
-        # 主ループ
-        while True:
-            # 温度と湿度を取得
-            tem, hum = self.read_bme280()
-            time.sleep(3)
-            # 定期的な距離測定
-            distance = self.measure_distance()
-            print(distance)
-            dt_now = datetime.datetime.now()
+        # 温度と湿度を取得
+        tem, hum = self.read_bme280()
+        time.sleep(3)
+        # 定期的な距離測定
+        distance = self.measure_distance()
+        print(distance)
+        dt_now = datetime.datetime.now()
 
-            # 距離が閾値以下の場合、短い間隔での追加測定を行う
-            judge = False
-            if distance < self.threshold:
-                count = self.rapid_measurement(self.threshold)
-                judge = count >= 4
+        # 距離が閾値以下の場合、短い間隔での追加測定を行う
+        judge = False
+        if distance < self.threshold:
+            count = self.rapid_measurement(self.threshold)
+            judge = count >= 4
 
-            # 測定結果をCSVに記録
-            with open(self.filename, mode="a", newline="") as file:
-                writer = csv.writer(file)
-                writer.writerow([judge, tem, hum, dt_now])
+        # 測定結果をCSVに記録
+        with open(self.filename, mode="a", newline="") as file:
+            writer = csv.writer(file)
+            writer.writerow([judge, tem, hum, dt_now])
 
-            time.sleep(1)  # 300秒（5分）待機 test 10s
+        time.sleep(1)  # 300秒（5分）待機 test 10s
