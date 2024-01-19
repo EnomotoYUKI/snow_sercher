@@ -7,10 +7,10 @@ from bme280 import bme280
 from bme280 import bme280_i2c
 
 
-class directionSensing:
+class sensing:
     def __init__(self):
         # ディレクトリのパス
-        self.directory = "/home/pi/snow_sercher/Iot_service/data"
+        self.directory = "EdgeDevice/strage"
         # ファイル名
         self.file_name = "data.csv"
         # 完全なファイルパス
@@ -69,7 +69,7 @@ class directionSensing:
         # 距離が閾値以下の場合、短い間隔での追加測定を行う
         judge = False
         if distance < self.threshold:
-            count = self.rapid_measurement(self.threshold)
+            count = self.rapid_measurement()
             judge = count >= 4
 
         # 測定結果をCSVに記録
