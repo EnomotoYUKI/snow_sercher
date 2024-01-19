@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Database Contents</title>
+</head>
+
+<body>
+    <h1>Table Contents</h1>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>temperature</th>
+            <th>humidity</th>
+            <th>snowfall</th>
+            <!-- 他のカラム名も同様に追加 -->
+        </tr>
+        {% for row in rows %}
+        <tr>
+            <td>{{ row[0] }}</td>
+            <td>{{ row[1] }}</td>
+            <td>{{ row[2] }}</td>
+            <td>{{ row[3] }}</td>
+            <!-- 他のカラムの値も同様に表示 -->
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+
+</html>
