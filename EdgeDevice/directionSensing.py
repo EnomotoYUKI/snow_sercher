@@ -67,7 +67,7 @@ while True:
     time.sleep(3)
     # 定期的な距離測定
     distance = measure_distance()
-    print(distance)
+    print(distance) #test
     dt_now = datetime.datetime.now()
 
     # 距離が閾値以下の場合、短い間隔での追加測定を行う
